@@ -66,8 +66,7 @@ def download_video(list_video):
 
     for v in list_video:
         print(v)
-        common.any_download(v, format='dash-flv',
-                            output_dir='download', merge=True)
+        common.any_download(v, output_dir='download', merge=True)
         file_util.append_all_text(file_downloaded_video, v+'\n')
 
     downloading = False
@@ -85,6 +84,7 @@ def init():
 
 @app.route('/', methods=['get', 'post'])
 def index():
+    print('index')
     return 'hello i am bilibili_auto_download you cloud visit /download'
 
 
@@ -92,7 +92,7 @@ def index():
 def download():
     print('def download')
     list_video = get_list_video()
-
+    print(f'download num {len(list_video)}')
     t = threading.Thread(target=download_video, args=(list_video,))
     t.start()
 
