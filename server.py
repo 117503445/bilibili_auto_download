@@ -64,12 +64,13 @@ def download_video(list_video):
     else:
         downloading = True
 
-    for v in list_video:
-        print(v)
-        common.any_download(v, output_dir='download', merge=True)
-        file_util.append_all_text(file_downloaded_video, v+'\n')
-
-    downloading = False
+    try:
+        for v in list_video:
+            print(v)
+            common.any_download(v, output_dir='download', merge=True)
+            file_util.append_all_text(file_downloaded_video, v+'\n')
+    finally:
+        downloading = False
 
 
 def init():
