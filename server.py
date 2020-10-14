@@ -17,6 +17,7 @@ downloading = False
 
 
 def get_one_page_list_video(page_num):
+    print('get_one_page_list_video')
     params = (
         ('mid', '54992199'),
         ('cid', '82529'),
@@ -67,7 +68,7 @@ def download_video(list_video):
     try:
         for v in list_video:
             print(v)
-            common.any_download(v, output_dir='download', merge=True)
+            common.any_download(v,format = 'flv', output_dir='download', merge=True)
             file_util.append_all_text(file_downloaded_video, v+'\n')
     finally:
         downloading = False
