@@ -1,4 +1,5 @@
 flask
 requests
 Flask-APScheduler
-you_get
+lxml
+tqdm

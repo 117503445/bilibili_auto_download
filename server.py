@@ -2,42 +2,17 @@ from flask import Flask, escape, request, render_template, jsonify
 import file_util
 from flask_apscheduler import APScheduler
 from apscheduler.schedulers.background import BackgroundScheduler
-import time
 import json
 import requests
 from pathlib import Path
 import threading
-from you_get import common
+import bilibili_util
 app = Flask("bilibili_auto_download")
 
 dir_download = Path('download')
 file_downloaded_video = dir_download / 'downloaded_video.txt'
 
 downloading = False
-
-
-def get_one_page_list_video(page_num):
-    print('get_one_page_list_video')
-    params = (
-        ('mid', '54992199'),
-        ('cid', '82529'),
-        ('pn', str(page_num)),
-        ('ps', '100'),
-    )
-
-    response = requests.get(
-        'https://api.bilibili.com/x/space/channel/video', params=params)
-
-    js = json.loads(response.text)
-    av = js['data']['list']['archives']
-
-    list_video = []
-
-    for a in av:
-        bvid = a['bvid']
-        list_video.append(f'https://www.bilibili.com/video/{bvid}')
-
-    return list_video
 
 
 def get_list_video():
@@ -48,7 +23,7 @@ def get_list_video():
 
     downloading_video = []
     for page_num in range(1000):
-        one_page_list_video = get_one_page_list_video(page_num)
+        one_page_list_video = bilibili_util.get_one_page_list_video(page_num)
         if len(one_page_list_video) == 0:
             break
         for v in one_page_list_video:
@@ -68,8 +43,8 @@ def download_video(list_video):
     try:
         for v in list_video:
             print(v)
-            common.any_download(v, output_dir='download', merge=True)
-            file_util.append_all_text(file_downloaded_video, v+'\n')
+            bilibili_util.download(v[0], dir_download / v[1])
+            file_util.append_all_text(file_downloaded_video, v[1]+'\n')
     finally:
         downloading = False
 
