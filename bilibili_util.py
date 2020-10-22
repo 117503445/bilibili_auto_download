@@ -32,11 +32,10 @@ def get_one_page_list_video(page_num):
 
 def resolve_video_path(bv_url: str):
 
-    cookies = {
-        'session': 'eyJjc3JmX3Rva2VuIjoiZGQ2YTYzMTYxYTU3YzA0ZWVjMWJlNmQzNDdmMzViMjJlMjUwMTJhNCJ9.X5AWuA.n7n2dNSchfm4xZhfQcUGgtKPT5A',
-        'Hm_lvt_495c417f527bcffa6cfe018d92be1e98': '1603283401',
-        'Hm_lpvt_495c417f527bcffa6cfe018d92be1e98': '1603283401',
-    }
+    session = requests.session()
+    response = session.get('https://bilibili.syyhc.com')
+    html = etree.HTML(response.text)
+    csrf_token = html.xpath('//*[@id="csrf_token"]/@value')[0]
 
     headers = {
         'Connection': 'keep-alive',
@@ -58,11 +57,11 @@ def resolve_video_path(bv_url: str):
     data = {
         'url': 'https://www.bilibili.com/video/BV1954y167cs',
         'go': '',
-        'csrf_token': 'ImRkNmE2MzE2MWE1N2MwNGVlYzFiZTZkMzQ3ZjM1YjIyZTI1MDEyYTQi.X5Apyg.HuvepEA1VkIG7e4RrguC3ntpuCE'
+        'csrf_token': csrf_token
     }
 
-    response = requests.post(
-        'https://bilibili.syyhc.com/parser', headers=headers, cookies=cookies, data=data)
+    response = session.post(
+        'https://bilibili.syyhc.com/parser', headers=headers,  data=data)
 
     html = etree.HTML(response.text)
     return html.xpath('//*[@id="video"]/source/@src')[0]
@@ -97,8 +96,8 @@ def download(url: str, file_path: str):
 
 def main():
     # get_one_page_list_video(1)
-    print(resolve_video_path('https://www.bilibili.com/video/BV1954y167cs'))
-    # download('http://upos-sz-mirrorks3.bilivideo.com/upgcxcode/09/37/247693709/247693709-1-208.mp4?e=ig8euxZM2rNcNbRBhWdVhwdlhWU1hwdVhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&uipk=5&nbs=1&deadline=1603288531&gen=playurl&os=ks3bv&oi=2015088686&trid=15206a4d849e47978622bbb0dc35120aT&platform=html5&upsig=c747a5cf93f25fe1034e80c89c50a49a&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,platform&mid=0&orderid=0,1&logo=80000000', 'download/1.mp4')
+    # print(resolve_video_path('https://www.bilibili.com/video/BV1954y167cs'))
+    download('http://upos-sz-mirrorks3.bilivideo.com/upgcxcode/09/37/247693709/247693709-1-208.mp4?e=ig8euxZM2rNcNbRBhWdVhwdlhWU1hwdVhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&uipk=5&nbs=1&deadline=1603288531&gen=playurl&os=ks3bv&oi=2015088686&trid=15206a4d849e47978622bbb0dc35120aT&platform=html5&upsig=c747a5cf93f25fe1034e80c89c50a49a&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,platform&mid=0&orderid=0,1&logo=80000000', 'download/1.mp4')
 
 
 if __name__ == '__main__':
