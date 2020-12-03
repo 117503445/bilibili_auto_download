@@ -55,7 +55,7 @@ def resolve_video_path(bv_url: str):
     }
 
     data = {
-        'url': 'https://www.bilibili.com/video/BV1954y167cs',
+        'url': bv_url,
         'go': '',
         'csrf_token': csrf_token
     }
